@@ -194,7 +194,7 @@ int main(int argc, char* argv[])
 	if(k_f<1.00000001) err("k must exceed 1.0000000.");
 	k_f_perDecade=(k_f-1)* log10(f_max/f_min); //the highest accuracy k_f value usually gives a value of around 6.1
 	suggested_k_f=1+(7/log10(f_max/f_min));
-	if(k_f_perDecade>7) fprintf(stderr,"unnesasarily low k value, consider increasing k or increasing the bandwidth\nReccomended k value is %s\n",engstr(suggested_k_f,4));
+	if(k_f_perDecade>7) fprintf(stderr,"unnecessarily low k value, consider increasing k or increasing the bandwidth\nReccomended k value is %s\n",engstr(suggested_k_f,4));
 	k = pow(k_f,alpha);	// a la Morrison
 
 
@@ -238,10 +238,10 @@ int main(int argc, char* argv[])
 		fprintf(inc,"* check Z0 = %.6f at f0 = %sHz or %s rad/s\n", Z0, sengstr(f0,4), engstr(f0*TWOPI,4) );
 	}
 
-	fprintf(inc,"* noise floor if node cpe2 is ground = presision* (branches^alpha) * (frequency/min_branch_freq)^(1-alpha)\n");
-	fprintf(inc,"* aproximatly = presision* (branches^%s) * (frequency/%s)^(%s)\n",engstr(alpha,4),engstr(f_min,4),engstr((1-alpha),4));
-	fprintf(inc,"* noise floor if node cpe1 is ground = presision* (branches^(1-alpha)) * (frequency/max_branch_freq)^(alpha)\n");
-	fprintf(inc,"* aproximatly = presision* (branches^%s) * (frequency/%s)^(%s)\n",engstr((1-alpha),4),engstr(f_max,4),engstr(alpha,4));
+	fprintf(inc,"* noise floor if node cpe2 is ground = precision* (branches^alpha) * (frequency/min_branch_freq)^(1-alpha)\n");
+	fprintf(inc,"* aproximatly = precision* (branches^%s) * (frequency/%s)^(%s)\n",engstr(alpha,4),engstr(f_min,4),engstr((1-alpha),4));
+	fprintf(inc,"* noise floor if node cpe1 is ground = precision* (branches^(1-alpha)) * (frequency/max_branch_freq)^(alpha)\n");
+	fprintf(inc,"* aproximatly = precision* (branches^%s) * (frequency/%s)^(%s)\n",engstr((1-alpha),4),engstr(f_max,4),engstr(alpha,4));
 
 	m = 1.00/alpha;
 	km1 = pow(k,m-1);
@@ -317,8 +317,8 @@ int main(int argc, char* argv[])
 	fprintf(stderr,"C0= %s, R0=%s\n",engstr(C0,17),engstr(R0,17));
 	fprintf(stderr,"CTerm= %s, RTerm=%s\n",engstr(C_T,17),engstr(R_T,17));
 	
-	fprintf(stderr,"noise floor = presision* (branches^alpha) * (frequency/min_branch_freq)^(1-alpha)\n");
-	fprintf(stderr,"reverse oreintation noise floor = presision* (branches^(1-alpha)) * (frequency/max_branch_freq)^(alpha)\n");
+	fprintf(stderr,"noise floor = precision* (branches^alpha) * (frequency/min_branch_freq)^(1-alpha)\n");
+	fprintf(stderr,"reverse oreintation noise floor = precision* (branches^(1-alpha)) * (frequency/max_branch_freq)^(alpha)\n");
 	fclose(inc);
 }
 
