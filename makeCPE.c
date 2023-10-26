@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
 	// 1.05: print largest and smallest R & C
 	// 1.06: fix bug with radians and hertz specifying Cf
 	// 2.00: all new approach with help from Marcus, checked against Vance & Logan
-	// 2.01: presision improvements, now 17 digit to max out the accuracy of double presision
+	// 2.01: precision improvements, now 17 digit to max out the accuracy of double precision
 	// 2.02: minor debug information improvements
     // 2.02: added CPEName and fileName to support simulating multiple CPEs made by the same program in the same circuit
     float version = 2.03;    
@@ -153,8 +153,9 @@ int main(int argc, char* argv[])
 		fprintf(stderr," or     C_f is the CPE constant from the fit;\n");
         fprintf(stderr,"        f_min and f_max are the frequency limits of the approximation;\n");
         fprintf(stderr,"        k>1 is the accuracy parameters, more accurate for k closer to 1.\n");
-        fprintf(stderr,"        CPEname is the Spice subcircuit name and fileName is the output file name (this should end in .inc).\n");
-        fprintf(stderr,"Writes file cpe.inc containing the SPICE subcircuit code. \n");
+        fprintf(stderr,"        CPEname is the Spice subcircuit name"); 
+		fprintf(stderr,"        fileName is the output file name"); 
+        fprintf(stderr,"Writes file <fileName> containing the SPICE subcircuit code \n");
         fprintf(stderr,"Value of alpha must be 0<alpha<1, and f_min<f0<f_max.\n");
         fprintf(stderr,"Set alpha=0.5 for a Warburg element.\n");
         fprintf(stderr,"It is recommended to choose frequency limits >10x beyond use range.\n");
@@ -168,10 +169,10 @@ int main(int argc, char* argv[])
 	if(alpha<0.0001) err("alpha is too small");//untested values, must be greater than 0
 	if(alpha>0.9999) err("alpha is too large");//untested values, must be less than 1
 
-	if(alpha<0.01) 	fprintf(stderr,"Warning, low alpha value, to avoid exsessive rounding error, place the first node of the CPE as close to 0V as possible\n");
-	if(alpha>0.99) 	fprintf(stderr,"Warning, high alpha value, to avoid exsessive rounding error, place the second node of the CPE as close to 0V as possible\n");
-	//noise floor = presision* (branches^alpha) * (frequency/min_branch_freq)^(1-alpha)
-	//reverse oreintation noise floor = presision* (branches^(1-alpha)) * (frequency/max_branch_freq)^(alpha)
+	if(alpha<0.01) 	fprintf(stderr,"Warning, low alpha value, to avoid excessive rounding error, place the first node of the CPE as close to 0V as possible\n");
+	if(alpha>0.99) 	fprintf(stderr,"Warning, high alpha value, to avoid excessive rounding error, place the second node of the CPE as close to 0V as possible\n");
+	//noise floor = precision* (branches^alpha) * (frequency/min_branch_freq)^(1-alpha)
+	//reverse oreintation noise floor = precision* (branches^(1-alpha)) * (frequency/max_branch_freq)^(alpha)
 
 	if(((argc==8)||(argc==6))){	// user specified alpha & Cf
 		C_f = atof(argv[++narg]);
@@ -194,7 +195,7 @@ int main(int argc, char* argv[])
 	if(k_f<1.00000001) err("k must exceed 1.0000000.");
 	k_f_perDecade=(k_f-1)* log10(f_max/f_min); //the highest accuracy k_f value usually gives a value of around 6.1
 	suggested_k_f=1+(7/log10(f_max/f_min));
-	if(k_f_perDecade>7) fprintf(stderr,"unnecessarily low k value, consider increasing k or increasing the bandwidth\nReccomended k value is %s\n",engstr(suggested_k_f,4));
+	if(k_f_perDecade>7) fprintf(stderr,"unnecessarily low k value, consider increasing k or increasing the bandwidth\nrecommended k value is %s\n",engstr(suggested_k_f,4));
 	k = pow(k_f,alpha);	// a la Morrison
 
 
@@ -224,7 +225,7 @@ int main(int argc, char* argv[])
 	}
 	fprintf(inc,"* CPE f_min/f_max = %s/%s\n", sengstr(f_min,4), sengstr(f_max,4) );
 	fprintf(inc,"* CPE k = %.6f\n", k );
-	fprintf(inc,"* CPE k_f = %s, reccomended k_f value = %s\n",engstr(k_f,6),engstr(suggested_k_f,6));
+	fprintf(inc,"* CPE k_f = %s, recommended k_f value = %s\n",engstr(k_f,6),engstr(suggested_k_f,6));
 
 	// print the opposite parameter set from that given, as a check	
 	if((argc==9)||(argc==7)){	// given Z@w so must find C_f
@@ -238,10 +239,10 @@ int main(int argc, char* argv[])
 		fprintf(inc,"* check Z0 = %.6f at f0 = %sHz or %s rad/s\n", Z0, sengstr(f0,4), engstr(f0*TWOPI,4) );
 	}
 
-	fprintf(inc,"* noise floor if node cpe2 is ground = precision* (branches^alpha) * (frequency/min_branch_freq)^(1-alpha)\n");
-	fprintf(inc,"* aproximatly = precision* (branches^%s) * (frequency/%s)^(%s)\n",engstr(alpha,4),engstr(f_min,4),engstr((1-alpha),4));
-	fprintf(inc,"* noise floor if node cpe1 is ground = precision* (branches^(1-alpha)) * (frequency/max_branch_freq)^(alpha)\n");
-	fprintf(inc,"* aproximatly = precision* (branches^%s) * (frequency/%s)^(%s)\n",engstr((1-alpha),4),engstr(f_max,4),engstr(alpha,4));
+	// fprintf(inc,"* noise floor if node cpe2 is ground = precision* (branches^alpha) * (frequency/min_branch_freq)^(1-alpha)\n");
+	// fprintf(inc,"* approximately = precision* (branches^%s) * (frequency/%s)^(%s)\n",engstr(alpha,4),engstr(f_min,4),engstr((1-alpha),4));
+	// fprintf(inc,"* noise floor if node cpe1 is ground = precision* (branches^(1-alpha)) * (frequency/max_branch_freq)^(alpha)\n");
+	// fprintf(inc,"* approximately = precision* (branches^%s) * (frequency/%s)^(%s)\n",engstr((1-alpha),4),engstr(f_max,4),engstr(alpha,4));
 
 	m = 1.00/alpha;
 	km1 = pow(k,m-1);
@@ -317,8 +318,9 @@ int main(int argc, char* argv[])
 	fprintf(stderr,"C0= %s, R0=%s\n",engstr(C0,17),engstr(R0,17));
 	fprintf(stderr,"CTerm= %s, RTerm=%s\n",engstr(C_T,17),engstr(R_T,17));
 	
-	fprintf(stderr,"noise floor = precision* (branches^alpha) * (frequency/min_branch_freq)^(1-alpha)\n");
-	fprintf(stderr,"reverse oreintation noise floor = precision* (branches^(1-alpha)) * (frequency/max_branch_freq)^(alpha)\n");
+	// fprintf(stderr,"noise floor = precision* (branches^alpha) * (frequency/min_branch_freq)^(1-alpha)\n");
+	// fprintf(stderr,"noise floor = %g\n", precision* (branches^alpha) * (frequency/min_branch_freq)^(1-alpha)\n);
+	// fprintf(stderr,"reverse oreintation noise floor = precision* (branches^(1-alpha)) * (frequency/max_branch_freq)^(alpha)\n");
 	fclose(inc);
 }
 
